@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Analytics - MedConnect{% endblock %}
+
+{% block content %}
+<section class="results-hero">
+    <div>
+        <span class="eyebrow">PROJECT ANALYTICS</span>
+        <h1>Dashboard usage & DBMS statistics</h1>
+        <p>Simple analytics generated from the SQLite database.</p>
+    </div>
+</section>
+
+<section class="stats-grid">
+    <div class="stat-card">
+        <span class="stat-icon">🔎</span>
+        <div><strong>{{ total_searches }}</strong><span>Total Searches</span></div>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon">☘</span>
+        <div><strong>{{ severity_counts.get('minor', 0) }}</strong><span>Minor Searches</span></div>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon">✚</span>
+        <div><strong>{{ severity_counts.get('major', 0) }}</strong><span>Major Searches</span></div>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon">🗃</span>
+        <div><strong>{{ provider_counts.values()|sum }}</strong><span>DB Providers</span></div>
+    </div>
+</section>
+
+<section class="analytics-grid">
+    <div class="panel">
+        <h2>Provider data</h2>
+        {% for key, value in provider_counts.items() %}
+        <div class="bar-row">
+            <div class="bar-label"><span>{{ key }}</span><strong>{{ value }}</strong></div>
+            <div class="bar-track">
+                <div class="bar-fill" style="width: {{ [value * 12, 100]|min }}%"></div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="panel">
+        <h2>Popular searches</h2>
+        {% if popular_queries %}
+            {% for row in popular_queries %}
+                <div class="filter-line">
+                    <span>{{ row["query"] }}</span>
+                    <strong>{{ row["total"] }}</strong>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="muted">No searches yet. Use the dashboard first.</p>
+        {% endif %}
+    </div>
+</section>
+
+<section class="panel">
+    <div class="section-heading">
+        <div>
+            <span class="eyebrow">SQL DATA</span>
+            <h2>Recent searches</h2>
+        </div>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Query</th>
+                    <th>Selected</th>
+                    <th>Detected</th>
+                    <th>Results</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in recent_searches %}
+                <tr>
+                    <td>{{ row["query"] or "—" }}</td>
+                    <td>{{ row["selected_severity"] }}</td>
+                    <td>{{ row["detected_severity"] }}</td>
+                    <td>{{ row["results_count"] }}</td>
+                    <td>{{ row["created_at"] }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5">No search records yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}About - MedConnect{% endblock %}
+
+{% block content %}
+<section class="results-hero">
+    <div>
+        <span class="eyebrow">ABOUT THE PROJECT</span>
+        <h1>MedConnect</h1>
+        <p>A Python + DBMS + Data Structures patient care finder.</p>
+    </div>
+</section>
+
+<section class="about-grid">
+    <article class="panel">
+        <h2>Problem Statement</h2>
+        <p>
+            Patients often do not know whom to contact for a health problem. This project
+            provides one dashboard where a patient can enter a problem and get nearby
+            medical contacts, doctors or hospitals based on seriousness, specialty and distance.
+        </p>
+    </article>
+
+    <article class="panel">
+        <h2>Python</h2>
+        <p>
+            Flask handles routes and pages. Python also performs severity routing,
+            keyword matching, Haversine distance calculations and provider scoring.
+        </p>
+    </article>
+
+    <article class="panel">
+        <h2>DBMS</h2>
+        <p>
+            SQLite stores providers, demo conditions and search history. SQL is used
+            for filtering, grouping, counting and analytics.
+        </p>
+    </article>
+
+    <article class="panel">
+        <h2>Data Structures</h2>
+        <p>
+            Lists and dictionaries store and transform result data, sets are used for
+            token matching, and a heap is used for efficient top-k provider ranking.
+        </p>
+    </article>
+</section>
+
+<div class="alert info">
+    <strong>Medical safety:</strong>
+    MedConnect is an academic directory prototype. It does not diagnose, prescribe
+    medicine, or replace a licensed healthcare professional.
+</div>
+{% endblock %}

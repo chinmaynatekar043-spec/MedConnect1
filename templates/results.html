@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %}Search Results - MedConnect{% endblock %}
+
+{% block content %}
+<section class="results-hero">
+    <div>
+        <a class="back-link" href="{{ url_for('index') }}">← New search</a>
+        <span class="eyebrow">SEARCH RESULTS</span>
+        <h1>
+            {% if problem %}
+                Help for “{{ problem }}”
+            {% else %}
+                Nearby medical help
+            {% endif %}
+        </h1>
+        <p>
+            Detected level:
+            <span class="severity-pill {{ severity }}">{{ severity|upper }}</span>
+            · Recommended specialty: <strong>{{ recommended_specialty }}</strong>
+            · Radius: <strong>{{ radius|int }} km</strong>
+        </p>
+    </div>
+</section>
+
+{% if severity == "major" %}
+<div class="alert danger">
+    <strong>Serious / emergency case:</strong>
+    this dashboard is only a directory demo. Do not delay emergency care while using it.
+</div>
+{% else %}
+<div class="alert info">
+    <strong>Minor-case route:</strong>
+    contact a qualified medical professional for advice. The dashboard itself does not
+    recommend or prescribe medicines.
+</div>
+{% endif %}
+
+<section class="results-layout">
+    <aside class="panel filter-card">
+        <h3>Current search</h3>
+        <div class="filter-line"><span>Latitude</span><strong>{{ "%.4f"|format(lat) }}</strong></div>
+        <div class="filter-line"><span>Longitude</span><strong>{{ "%.4f"|format(lon) }}</strong></div>
+        <div class="filter-line"><span>Type</span><strong>{{ provider_type }}</strong></div>
+        <div class="filter-line"><span>Specialty</span><strong>{{ specialty_filter }}</strong></div>
+
+        {% if condition %}
+        <div class="match-box">
+            <small>Matched demo condition</small>
+            <strong>{{ condition["name"]|title }}</strong>
+        </div>
+        {% endif %}
+    </aside>
+
+    <div class="results-list">
+        <div class="results-count">
+            <strong>{{ results|length }}</strong> matching provider(s)
+        </div>
+
+        {% if results %}
+            {% for provider in results %}
+            <article class="provider-card">
+                <div class="provider-top">
+                    <div class="provider-type-icon">
+                        {% if provider.provider_type == "Hospital" %}🏥
+                        {% elif provider.provider_type == "Doctor" %}🩺
+                        {% else %}☎{% endif %}
+                    </div>
+
+                    <div class="provider-title">
+                        <div class="provider-kicker">
+                            {{ provider.provider_type }}
+                            {% if provider.emergency %}
+                                <span class="emergency-badge">24/7 / Emergency</span>
+                            {% endif %}
+                        </div>
+                        <h3>{{ provider.name }}</h3>
+                        <p>{{ provider.specialty }}</p>
+                        <div class="availability-status {% if provider.is_available %}available{% else %}unavailable{% endif %}">
+                            <span class="status-dot"></span>
+                            {% if provider.is_available %}Available now{% else %}Currently unavailable{% endif %}
+                        </div>
+                    </div>
+
+                    <div class="distance-box">
+                        <strong>{{ "%.1f"|format(provider.distance_km) }}</strong>
+                        <span>km away</span>
+                    </div>
+                </div>
+
+                <div class="provider-meta">
+                    <span>📍 {{ provider.city }}, {{ provider.state }}</span>
+                    <span>🕒 {{ provider.availability }}</span>
+                    <span>🎓 {{ provider.qualification }}</span>
+                </div>
+
+                <div class="provider-actions">
+                    <a class="primary-btn compact" href="tel:{{ provider.phone|replace(' ', '') }}">
+                        Call {{ provider.phone }}
+                    </a>
+                    <a class="secondary-btn compact" href="{{ url_for('provider_detail', provider_id=provider.id) }}">
+                        View details
+                    </a>
+                </div>
+            </article>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <div>🔎</div>
+                <h3>No providers inside this radius</h3>
+                <p>Try a larger search radius, another specialty, or “Any suitable provider”.</p>
+                <a class="primary-btn compact" href="{{ url_for('index') }}">Change search</a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

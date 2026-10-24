@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}{{ provider.name }} - MedConnect{% endblock %}
+
+{% block content %}
+<a class="back-link" href="javascript:history.back()">← Back to results</a>
+
+<section class="provider-profile">
+    <div class="profile-main panel">
+        <div class="profile-heading">
+            <div class="profile-icon">
+                {% if provider.provider_type == "Hospital" %}🏥
+                {% elif provider.provider_type == "Doctor" %}🩺
+                {% else %}☎{% endif %}
+            </div>
+            <div>
+                <span class="eyebrow">{{ provider.provider_type }}</span>
+                <h1>{{ provider.name }}</h1>
+                <p>{{ provider.specialty }}</p>
+            </div>
+        </div>
+
+        <div class="detail-grid">
+            <div class="detail-item">
+                <span>Qualification</span>
+                <strong>{{ provider.qualification }}</strong>
+            </div>
+            <div class="detail-item">
+                <span>Experience</span>
+                <strong>{{ provider.experience_years }} years</strong>
+            </div>
+            <div class="detail-item">
+                <span>Availability hours</span>
+                <strong>{{ provider.availability }}</strong>
+            </div>
+            <div class="detail-item">
+                <span>Current status</span>
+                <strong class="availability-status {% if provider.is_available %}available{% else %}unavailable{% endif %}">
+                    <span class="status-dot"></span>
+                    {% if provider.is_available %}Available now{% else %}Currently unavailable{% endif %}
+                </strong>
+            </div>
+            <div class="detail-item">
+                <span>Emergency support</span>
+                <strong>{{ "Yes" if provider.emergency else "No" }}</strong>
+            </div>
+            <div class="detail-item full">
+                <span>Address</span>
+                <strong>{{ provider.address }}, {{ provider.city }}, {{ provider.state }}</strong>
+            </div>
+            <div class="detail-item full">
+                <span>Notes</span>
+                <strong>{{ provider.notes }}</strong>
+            </div>
+        </div>
+    </div>
+
+    <aside class="panel contact-card">
+        <h3>Contact</h3>
+        <p class="contact-label">Phone</p>
+        <a class="contact-value" href="tel:{{ provider.phone|replace(' ', '') }}">{{ provider.phone }}</a>
+
+        {% if provider.email %}
+        <p class="contact-label">Email</p>
+        <a class="contact-value" href="mailto:{{ provider.email }}">{{ provider.email }}</a>
+        {% endif %}
+
+        {% if provider.is_available %}
+        <a class="primary-btn full-btn" href="tel:{{ provider.phone|replace(' ', '') }}">Call provider</a>
+        {% else %}
+        <button class="secondary-btn full-btn" type="button" disabled>Currently unavailable</button>
+        {% endif %}
+
+        <div class="demo-warning">
+            This is fictional template data for a college project. Do not use these details
+            for real medical care.
+        </div>
+    </aside>
+</section>
+{% endblock %}

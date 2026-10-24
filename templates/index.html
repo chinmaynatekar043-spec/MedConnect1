@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% block title %}MedConnect - Patient Dashboard{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div>
+        <span class="eyebrow">PATIENT CARE FINDER</span>
+        <h1>Find the right medical help near you.</h1>
+        <p>
+            Describe the problem, choose the seriousness, and MedConnect ranks nearby
+            medical contacts, doctors and hospitals using distance and specialty.
+        </p>
+        <div class="hero-note">
+            <strong>Emergency:</strong> If there is immediate danger, severe bleeding,
+            unconsciousness, chest pain, stroke signs or major breathing difficulty,
+            contact local emergency services immediately.
+        </div>
+    </div>
+
+    <div class="hero-card">
+        <div class="pulse">♥</div>
+        <div>
+            <strong>{{ provider_count }}</strong>
+            <span>demo care providers</span>
+        </div>
+    </div>
+</section>
+
+<section class="stats-grid">
+    <div class="stat-card">
+        <span class="stat-icon">🩺</span>
+        <div><strong>{{ doctor_count }}</strong><span>Doctors</span></div>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon">🏥</span>
+        <div><strong>{{ hospital_count }}</strong><span>Hospitals</span></div>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon">☎</span>
+        <div><strong>{{ contact_count }}</strong><span>Medical Contacts</span></div>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon">📍</span>
+        <div><strong>Near You</strong><span>Distance ranking</span></div>
+    </div>
+</section>
+
+<section class="panel search-panel">
+    <div class="section-heading">
+        <div>
+            <span class="eyebrow">START HERE</span>
+            <h2>Tell us what help you need</h2>
+        </div>
+        <span class="safe-badge">No self-medication advice</span>
+    </div>
+
+    <form action="{{ url_for('search') }}" method="get" class="search-form">
+        <div class="form-group full">
+            <label for="problem">Problem / symptom</label>
+            <textarea id="problem" name="problem" rows="3"
+                placeholder="Example: mild fever and cough, skin rash, chest pain, accident..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="severity">Problem level</label>
+            <select id="severity" name="severity">
+                <option value="auto">Auto detect</option>
+                <option value="minor">Minor</option>
+                <option value="major">Major / serious</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="provider_type">Provider type</label>
+            <select id="provider_type" name="provider_type">
+                <option value="all">Any suitable provider</option>
+                <option value="Medical Contact">Medical Contact</option>
+                <option value="Doctor">Doctor</option>
+                <option value="Hospital">Hospital</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="specialty">Specialty</label>
+            <select id="specialty" name="specialty">
+                <option value="all">Any specialty</option>
+                {% for specialty in specialties %}
+                    <option value="{{ specialty }}">{{ specialty }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="radius">Search radius</label>
+            <select id="radius" name="radius">
+                <option value="10">10 km</option>
+                <option value="25">25 km</option>
+                <option value="50">50 km</option>
+                <option value="100" selected>100 km</option>
+                <option value="250">250 km</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="lat">Latitude</label>
+            <input id="lat" name="lat" type="number" step="any" value="{{ default_lat }}">
+        </div>
+
+        <div class="form-group">
+            <label for="lon">Longitude</label>
+            <input id="lon" name="lon" type="number" step="any" value="{{ default_lon }}">
+        </div>
+
+        <div class="location-row full">
+            <button type="button" class="secondary-btn" onclick="useMyLocation()">
+                📍 Use my location
+            </button>
+            <span id="locationStatus">Demo location loaded by default.</span>
+        </div>
+
+        <div class="full">
+            <button class="primary-btn" type="submit">Find Medical Help →</button>
+        </div>
+    </form>
+</section>
+
+<section class="route-grid">
+    <article class="route-card minor">
+        <div class="route-icon">☘</div>
+        <h3>Minor problem</h3>
+        <p>
+            The dashboard can show nearby medical contacts and general doctors so the
+            patient can call a qualified person and receive appropriate guidance.
+        </p>
+    </article>
+
+    <article class="route-card major">
+        <div class="route-icon">✚</div>
+        <h3>Major / serious problem</h3>
+        <p>
+            The dashboard prioritizes emergency-capable hospitals and relevant
+            specialists instead of general medical contacts.
+        </p>
+    </article>
+</section>
+{% endblock %}
